@@ -1,6 +1,7 @@
 import os
-import requests
 import shutil
+import requests
+from faker import Faker
 from telethon import TelegramClient, functions, sync
 from telethon.tl.functions.account import UpdateProfileRequest
 
@@ -8,9 +9,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+APP_PATH = os.path.dirname(os.path.abspath(__file__))
+PATH_TO_IMAGE = os.path.join(APP_PATH, 'ava.jpg')
 with TelegramClient(os.getenv("NAME"), os.getenv("APP_ID"), os.getenv("API_HASH")) as client:
-    from faker import Faker
-
     # CHANGE PROFILE
     fake = Faker()
     client(UpdateProfileRequest(
@@ -21,11 +22,12 @@ with TelegramClient(os.getenv("NAME"), os.getenv("APP_ID"), os.getenv("API_HASH"
 
     # GET IMAGE
     img_url = 'https://cataas.com/c?type=square'
-    with open('ava.jpg', 'wb') as output_file, \
+
+    with open(PATH_TO_IMAGE, 'wb') as output_file, \
             requests.get(img_url, stream=True) as response:
         shutil.copyfileobj(response.raw, output_file)
 
         # CHANGE AVATAR
         result = client(functions.photos.UploadProfilePhotoRequest(
-            file=client.upload_file('ava.jpg')
+            file=client.upload_file(PATH_TO_IMAGE)
         ))
