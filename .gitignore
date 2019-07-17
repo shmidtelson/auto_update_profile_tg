@@ -1,0 +1,5 @@
+*.session
+.idea
+.env
+Pipfile.lock
+*.jpg
